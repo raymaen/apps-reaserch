@@ -5,10 +5,8 @@ class gamesProvider {
   async createGame(appId) {
     try {
       const game = await scrapeGame(appId);
-      await Game.create({
-        ...game,
-        status: 'Not sent'
-      });
+      game['status'] = 'Not sent';
+      await Game.create(game);
     } catch (error) {
       throw new error(error);
     }

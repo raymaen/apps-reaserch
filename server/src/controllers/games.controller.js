@@ -21,7 +21,7 @@ Router.post('/:id', async (req, res) => {
   const appId = req.params.id;
   try {
     await GamesProvider.createGame(appId);
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
     res.status(500);
   }
