@@ -1,36 +1,70 @@
-import express from "express";
-
+import express from 'express';
+import { GamesProvider } from '../providers/games.provider';
 const Router = express.Router();
 
-Router.post("/new", (req, res) => {
-  const id = req.body.id;
-
+/**
+ * @description Get all games
+ */
+Router.get('/', async (req, res) => {
   try {
-    // add new game
-    // scrape for game
-    // save in db
+    const data = await GamesProvider.getGames();
+    res.json({ data });
+  } catch (error) {
+    res.status(400);
+  }
+});
+
+/**
+ * @description Create new game
+ */
+Router.post('/:id', async (req, res) => {
+  const appId = req.params.id;
+  try {
+    await GamesProvider.createGame(appId);
+    res.status(200);
+  } catch (error) {
+    res.status(500);
+  }
+});
+
+/**
+ * @description Get game by id
+ */
+Router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await GamesProvider.getGame(id);
+    res.status({ data });
+  } catch (error) {
+    res.status(500);
+  }
+});
+
+/**
+ * @description Update game status
+ */
+Router.post('/update/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await GamesProvider.updateGame(id, status);
     res.status(200);
   } catch (error) {
     res.status(400);
   }
 });
 
-Router.get("/data", (req, res) => {
+/**
+ * @description Delete game
+ */
+Router.delete('/:id', async (req, res) => {
   try {
-    // get all game data
+    const { id } = req.params;
+    await GamesProvider.deleteGame(id);
     res.status(200);
   } catch (error) {
     res.status(400);
   }
 });
 
-Router.get("/data/:id", (req, res) => {
-  try {
-    // get game data
-    res.status(200);
-  } catch (error) {
-    res.status(400);
-  }
-});
-
-export default Router;
+export const GamesController = Router;
