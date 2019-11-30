@@ -23,7 +23,7 @@ Router.post('/:id', async (req, res) => {
     await GamesProvider.createGame(appId);
     res.sendStatus(200);
   } catch (error) {
-    res.status(500);
+    res.sendStatus(500);
   }
 });
 
@@ -36,7 +36,7 @@ Router.get('/:id', async (req, res) => {
     const data = await GamesProvider.getGame(id);
     res.status({ data });
   } catch (error) {
-    res.status(500);
+    res.sendStatus(500);
   }
 });
 
@@ -48,9 +48,9 @@ Router.post('/update/:id', async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     await GamesProvider.updateGame(id, status);
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
-    res.status(400);
+    res.sendStatus(400);
   }
 });
 
@@ -61,9 +61,9 @@ Router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     await GamesProvider.deleteGame(id);
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
-    res.status(400);
+    res.sendStatus(400);
   }
 });
 

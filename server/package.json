@@ -16,6 +16,7 @@
     "google-play-scraper": "^7.1.0",
     "mongoose": "^5.7.12",
     "morgan": "^1.9.1",
+    "node-mailer": "^0.1.1",
     "path": "^0.12.7"
   },
   "devDependencies": {
