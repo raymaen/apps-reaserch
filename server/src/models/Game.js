@@ -9,7 +9,9 @@ const GameSchema = new Schema({
   // From Scraper
   appId: String,
   url: String,
+  headerImage: String,
   title: String,
+  description: String,
   minInstalls: Number,
   score: Number,
   ratings: Number,
@@ -28,7 +30,9 @@ export const Game = mongoose.model('Game', GameSchema);
 export const GameDataKeys = [
   'appId',
   'url',
+  'headerImage',
   'title',
+  'description',
   'minInstalls',
   'score',
   'ratings',

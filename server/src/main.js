@@ -2,7 +2,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from 'morgan';
-import path from 'path';
 import { GamesController } from './controllers/games.controller';
 
 const PORT = process.env.PORT || '5000';
@@ -15,9 +14,9 @@ app.use(logger('dev'));
 app.use('api/games', GamesController);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client', 'build')));
+  app.use(express.static('../../client/build'));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    res.sendFile('../../client/build/index.html');
   });
 }
 
