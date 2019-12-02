@@ -55,12 +55,35 @@ Router.post('/update/:id', async (req, res) => {
 });
 
 /**
+ * @description Delete all games - *unsafe*
+ */
+
+Router.delete('/all', async (req, res) => {
+  try {
+    await GamesProvider.deleteAll();
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(400);
+  }
+});
+
+/**
  * @description Delete game
  */
 Router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     await GamesProvider.deleteGame(id);
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(400);
+  }
+});
+
+Router.delete('/all', async (req, res) => {
+  try {
+    console.log('asd');
+    await GamesProvider.deleteAll();
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(400);

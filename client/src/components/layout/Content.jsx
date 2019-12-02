@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import DataTable from './DataTable';
+import AddGames from './AddGamesDialog';
 const styles = theme => ({
   paper: {
     maxWidth: 936,
@@ -31,6 +32,7 @@ function Content(props) {
 
   return (
     <Paper className={classes.paper}>
+      <AddGames></AddGames>
       <DataTable></DataTable>
     </Paper>
   );

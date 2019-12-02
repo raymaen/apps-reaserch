@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(logger('dev'));
-app.use('api/games', GamesController);
+app.use('/api/games', GamesController);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('../../client/build'));

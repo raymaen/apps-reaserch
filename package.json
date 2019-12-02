@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && cd server && npm serve",
+    "start": "npm run build && cd server && npm run serve",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd server && npm run dev",
+    "server": "cd server && npm start",
     "client": "cd client && npm start",
     "build": "npm run buildServer && npm run buildClient",
     "buildServer": "cd server && npm run build",

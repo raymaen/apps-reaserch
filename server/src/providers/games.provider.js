@@ -40,7 +40,16 @@ class gamesProvider {
 
   async deleteGame(id) {
     try {
-      return await Game.findOneAndDelete(id);
+      await Game.findOneAndDelete(id);
+    } catch (error) {
+      throw new error(error);
+    }
+  }
+
+  async deleteAll() {
+    try {
+      await Game.collection.drop();
+      console.log('Dropped all games');
     } catch (error) {
       throw new error(error);
     }

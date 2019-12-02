@@ -1,5 +1,6 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,9 +8,17 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SendIcon from '@material-ui/icons/Send';
+import React from 'react';
+import { round } from 'mathjs';
+import GameDetailsDialog from './GameDetailsDialog';
+import { fakeData, GameAllDataKeys } from '../../service/types';
 
 const columns = [
-  { id: 'headerImage', label: 'Game', minWidth: 100 },
+  { id: 'index', label: 'Index', minWidth: 60 },
+  { id: 'headerImage', label: 'Avatar', minWidth: 100 },
   { id: 'title', label: 'Title', minWidth: 100 },
   { id: 'score', label: 'Ratings', minWidth: 100 },
   { id: 'minInstalls', label: 'Installs', minWidth: 100 },
@@ -17,58 +26,43 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 100 }
 ];
 
-function createData(
-  img = 'avater',
-  title = '123',
-  score = '123',
-  minInstalls = '123',
-  status = '123',
-  actions = 'asdasd'
-) {
-  return { img, title, score, minInstalls, status, actions };
-}
+const createData = data =>
+  data.map(dataRow => {
+    GameAllDataKeys.forEach(key => (dataRow[key] = dataRow[key]));
+    return dataRow;
+  });
 
-const rows = [
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData(),
-  createData()
-];
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%'
   },
   tableWrapper: {
     maxHeight: 440,
     overflow: 'auto'
+  },
+  tableHeader: {
+    fontWeight: 600,
+    color: 'navy'
+  },
+  tableRow: {
+    textAlign: 'center'
+  },
+  flex: {
+    margin: '0 auto'
+  },
+  icons: {
+    '& > *': {
+      margin: theme.spacing(0.5)
+    }
   }
-});
+}));
 
-export default function StickyHeadTable() {
+const StickyHeadTable = () => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = React.useState(createData(fakeData));
+  console.log(rows);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -87,6 +81,7 @@ export default function StickyHeadTable() {
             <TableRow>
               {columns.map(column => (
                 <TableCell
+                  className={classes.tableHeader}
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
@@ -99,19 +94,51 @@ export default function StickyHeadTable() {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(row => {
+              .map((game, index) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map(column => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
+                  <TableRow hover role="checkbox" tabIndex={-1} key={game.code}>
+                    <TableCell>
+                      <strong>{index + 1}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title={`Visit ${game.title}`}>
+                        <IconButton aria-label="more details">
+                          <Avatar
+                            alt={game.title}
+                            src={game.headerImage}
+                            onClick={() => {
+                              window.location.href = game.url;
+                            }}
+                          />{' '}
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <strong>{game.title}</strong>
+                    </TableCell>
+                    <TableCell>{round(game.score, 2)}</TableCell>
+                    <TableCell>+ {game.minInstalls.toLocaleString()}</TableCell>
+                    <TableCell>
+                      {/* status formatting */}
+                      {game.status}
+                    </TableCell>
+                    <TableCell>
+                      <div className={classes.icons}>
+                        {/* <Tooltip title="Delete Game">
+                          <IconButton aria-label="delete">
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip> */}
+
+                        <Tooltip title="Send Email">
+                          <IconButton aria-label="Send Email">
+                            <SendIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+
+                        <GameDetailsDialog game={game} />
+                      </div>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -135,4 +162,6 @@ export default function StickyHeadTable() {
       />
     </Paper>
   );
-}
+};
+
+export default StickyHeadTable;
