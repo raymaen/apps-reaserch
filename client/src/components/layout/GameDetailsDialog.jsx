@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import PropTypes from 'prop-types';
 
@@ -27,7 +27,7 @@ const GameDetailsDialog = ({ game }) => {
     <Fragment>
       <Tooltip title="More Details">
         <IconButton aria-label="more details" onClick={handleClickOpen}>
-          <ExpandMoreIcon fontSize="small" />
+          <MoreVertIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Dialog

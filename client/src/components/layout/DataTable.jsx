@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -9,17 +10,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
 import SendIcon from '@material-ui/icons/Send';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { round } from 'mathjs';
 import GameDetailsDialog from './GameDetailsDialog';
-import { fakeData, GameAllDataKeys } from '../../service/types';
+import { GameAllDataKeys } from '../../service/types';
+import { ApiHandler } from '../../service/api';
 
 const columns = [
-  { id: 'index', label: 'Index', minWidth: 60 },
-  { id: 'headerImage', label: 'Avatar', minWidth: 100 },
-  { id: 'title', label: 'Title', minWidth: 100 },
+  { id: 'index', label: '', minWidth: 20 },
+  { id: 'headerImage', label: 'Game', minWidth: 100 },
   { id: 'score', label: 'Ratings', minWidth: 100 },
   { id: 'minInstalls', label: 'Installs', minWidth: 100 },
   { id: 'status', label: 'Status', minWidth: 100 },
@@ -42,14 +43,17 @@ const useStyles = makeStyles(theme => ({
   },
   tableHeader: {
     fontWeight: 600,
-    color: 'navy'
+    fontSize: 12
   },
   tableRow: {
     textAlign: 'center'
   },
   flex: {
-    margin: '0 auto'
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
+  email: { fontSize: 10, color: theme.palette.text.secondary },
   icons: {
     '& > *': {
       margin: theme.spacing(0.5)
@@ -57,12 +61,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StickyHeadTable = () => {
+const GamesTable = ({ games }) => {
   const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = React.useState(createData(fakeData));
-  console.log(rows);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const rows = createData(games);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,6 +75,10 @@ const StickyHeadTable = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  if (!rows.length) {
+    return <CircularProgress color="secondary" />;
+  }
 
   return (
     <Paper className={classes.root}>
@@ -97,10 +104,13 @@ const StickyHeadTable = () => {
               .map((game, index) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={game.code}>
+                    {/* Expand game */}
                     <TableCell>
-                      <strong>{index + 1}</strong>
+                      <GameDetailsDialog game={game} />
                     </TableCell>
-                    <TableCell>
+
+                    {/* Avatar */}
+                    <TableCell className={classes.flex}>
                       <Tooltip title={`Visit ${game.title}`}>
                         <IconButton aria-label="more details">
                           <Avatar
@@ -112,9 +122,12 @@ const StickyHeadTable = () => {
                           />{' '}
                         </IconButton>
                       </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <strong>{game.title}</strong>
+                      <div>
+                        <strong>{game.title}</strong>
+                        <div className={classes.email}>
+                          {game.developerEmail}
+                        </div>
+                      </div>
                     </TableCell>
                     <TableCell>{round(game.score, 2)}</TableCell>
                     <TableCell>+ {game.minInstalls.toLocaleString()}</TableCell>
@@ -124,19 +137,11 @@ const StickyHeadTable = () => {
                     </TableCell>
                     <TableCell>
                       <div className={classes.icons}>
-                        {/* <Tooltip title="Delete Game">
-                          <IconButton aria-label="delete">
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip> */}
-
                         <Tooltip title="Send Email">
                           <IconButton aria-label="Send Email">
                             <SendIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-
-                        <GameDetailsDialog game={game} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -164,4 +169,8 @@ const StickyHeadTable = () => {
   );
 };
 
-export default StickyHeadTable;
+GamesTable.propTypes = {
+  games: PropTypes.array.isRequired
+};
+
+export default GamesTable;

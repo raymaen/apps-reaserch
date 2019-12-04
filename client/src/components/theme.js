@@ -11,7 +11,7 @@ let theme = createMuiTheme({
   typography: {
     h5: {
       fontWeight: 500,
-      fontSize: 26,
+      fontSize: 20,
       letterSpacing: 0.5
     }
   },

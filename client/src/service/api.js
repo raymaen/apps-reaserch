@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-const alerter = {};
+const alerter = {
+  message: msg => console.log(msg),
+  error: err => console.log(err)
+};
 
-export class apiHandler {
+class apiHandler {
   constructor() {
     this.gamesEndpoint = '/api/games';
   }
@@ -20,13 +23,13 @@ export class apiHandler {
         console.log(result);
       }
 
-      return result;
+      return result.data.data;
     } catch (error) {
       alerter.error(error);
     }
   }
 
-  async addGame(appId) {
+  async addGames(appId) {
     await this.fetch(appId, 'post');
     alerter.message('Added game to data');
   }
@@ -51,3 +54,5 @@ export class apiHandler {
     alerter.message('Game deleted');
   }
 }
+
+export const ApiHandler = new apiHandler();
